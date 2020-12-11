@@ -1,6 +1,5 @@
 import csv
 import os
-import re
 import nltk
 nltk.download()
 from nltk.corpus import stopwords
@@ -12,10 +11,12 @@ csv_file = open('training.csv', encoding='latin-1')
 csv_reader = csv.reader(csv_file, delimiter=',')
 
 for row in csv_reader:
+    p=[]
     stop = set(stopwords.words('english'))
     for i in row[-1].split():
         if i not in stop:
-            data.append((i, row[0]))
+            p.append(i)
+    data.append((p, row[0]))
 noun = 0.0
 adjective = 0.0
 adverb = 0.0
