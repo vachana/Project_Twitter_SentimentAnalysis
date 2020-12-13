@@ -24,8 +24,22 @@ data = []
 csv_file = open('training.csv', encoding='latin-1')  ######################################trainning file
 csv_reader = csv.reader(csv_file, delimiter=',')
 
-for row in itertools.islice(csv_reader, 100000):
-    data.append((word_tokenize(row[-1]), row[0]))
+# for row in itertools.islice(csv_reader, 100000):
+pos_counter = 0
+neg_counter = 0
+ntr_counter = 0
+
+for row in csv_reader:
+    if row[0] == "4" and pos_counter < 50000:
+        data.append((word_tokenize(row[-1]), row[0]))
+        pos_counter += 1
+    elif row[0] == "2" and ntr_counter < 50000:
+        data.append((word_tokenize(row[-1]), row[0]))
+        ntr_counter += 1
+    elif neg_counter < 50000:
+        data.append((word_tokenize(row[-1]), row[0]))
+        neg_counter += 1
+
 num_rows = len(data)
 
 all_words = []
@@ -54,8 +68,8 @@ with open("features_training.csv", 'w+') as myfile:
         postag = pos_tag(row[0])
         d_freq = nltk.FreqDist(row[0])
 
-        positive = 0.0
-        negative = 0.0
+        positive_words = 0.0
+        negative_words = 0.0
         noun = 0.0
         adjective = 0.0
         adverb = 0.0
@@ -67,9 +81,9 @@ with open("features_training.csv", 'w+') as myfile:
             tfidf = tf * idf
 
             if token in positives:
-                positive += tfidf
+                positive_words += tfidf
             if token in negatives:
-                negative += tfidf
+                negative_words += tfidf
             if pos.startswith('N'):
                 noun += tfidf
             if pos.startswith('JJ'):
@@ -85,6 +99,6 @@ with open("features_training.csv", 'w+') as myfile:
         pronouncount = pronoun / l
         adverbcount = adverb / l
 
-        mylist= [nouncount,adjectivecount,pronouncount,adverbcount,positive,negative,row[1]]
+        mylist= [nouncount,adjectivecount,pronouncount,adverbcount,positive_words,negative_words,row[1]]
         wr.writerow(mylist)
 # (x1-y1)^2 + (x2-y2)^2 + …
