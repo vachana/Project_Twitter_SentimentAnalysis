@@ -197,7 +197,6 @@ def getLeafNodes(node, leafNodes=[]):
 
     getLeafNodes(node.true_branch, leafNodes)
     getLeafNodes(node.false_branch, leafNodes)
-
     return leafNodes
 
 
@@ -205,12 +204,10 @@ def getInnerNodes(node, innerNodes=[]):
 
     if isinstance(node, Leaf):
         return
-
     innerNodes.append(node)
 
     getInnerNodes(node.true_branch, innerNodes)
     getInnerNodes(node.false_branch, innerNodes)
-
     return innerNodes
 
 def computeAccuracy(rows, node):
