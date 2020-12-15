@@ -99,7 +99,6 @@ def max_label(dict):
     return label
 
 class Decision_Node:
-
     def __init__(self,
                  question,
                  true_branch,
@@ -115,7 +114,6 @@ class Decision_Node:
         self.rows = rows
 
 class Leaf:
-
     def __init__(self, rows, id, depth):
 
         self.predictions = unique_class_counts(rows)
@@ -139,7 +137,6 @@ def buildTree(rows, header, depth=0, id=0):
         else:
             false_rows.append(row)
 
-
     true_branch = buildTree(true_rows, header, depth + 1, 2 * id + 2)
     false_branch = buildTree(false_rows, header, depth + 1, 2 * id + 1)
 
@@ -155,7 +152,6 @@ def pruneTree(node, prunedListofNodes):
 
     node.true_branch = pruneTree(node.true_branch, prunedListofNodes)
     node.false_branch = pruneTree(node.false_branch, prunedListofNodes)
-
     return node
 
 def classification(row, node):
