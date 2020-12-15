@@ -3,9 +3,7 @@ import os
 import nltk
 from nltk import word_tokenize, pos_tag
 import math
-import itertools
-from numba import cuda
-from nltk.tokenize import TreebankWordTokenizer
+from nltk.corpus import stopwords
 
 
 def readwords(filename):
@@ -20,8 +18,8 @@ negatives = readwords('negative-words.txt')
 data = []
 # preprocessing
 
-# csv_file = open('testdata.csv', encoding='latin-1')  ######################################test file
-csv_file = open('training.csv', encoding='latin-1')  ######################################trainning file
+csv_file = open('testdata.csv', encoding='latin-1')  ######################################test file
+# csv_file = open('training.csv', encoding='latin-1')  ######################################trainning file
 csv_reader = csv.reader(csv_file, delimiter=',')
 
 # for row in itertools.islice(csv_reader, 100000):
@@ -29,15 +27,24 @@ pos_counter = 0
 neg_counter = 0
 ntr_counter = 0
 
+def add_sample(row):
+    # p = []
+    # stop = set(stopwords.words('english'))
+    # for i in row[-1].split():
+    #     if i not in stop:
+    #         p.append(i)
+    # data.append((p, row[0]))
+    data.append((word_tokenize(row[-1]), row[0]))
+
 for row in csv_reader:
     if row[0] == "4" and pos_counter < 50000:
-        data.append((word_tokenize(row[-1]), row[0]))
+        add_sample(row)
         pos_counter += 1
     elif row[0] == "2" and ntr_counter < 50000:
-        data.append((word_tokenize(row[-1]), row[0]))
+        add_sample(row)
         ntr_counter += 1
     elif neg_counter < 50000:
-        data.append((word_tokenize(row[-1]), row[0]))
+        add_sample(row)
         neg_counter += 1
 
 num_rows = len(data)
@@ -60,7 +67,7 @@ for row in data:
             count_idf[word] += 1
 
 print("start writing features...")
-with open("features_training.csv", 'w+') as myfile:
+with open("features_test_before.csv", 'w+') as myfile:
     wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
     for i, row in enumerate(data):
         if i%10000 == 0:
@@ -78,7 +85,8 @@ with open("features_training.csv", 'w+') as myfile:
         for token, pos in postag:
             tf = math.log10(1 + d_freq[token])
             idf = math.log10(num_rows / count_idf[token])
-            tfidf = tf * idf
+            # tfidf = tf * idf
+            tfidf = 1
 
             if token in positives:
                 positive_words += tfidf
