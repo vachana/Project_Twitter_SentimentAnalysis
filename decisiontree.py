@@ -52,7 +52,7 @@ def entropy(rows):
         cal_entropy += -x * math.log2(x)
     return cal_entropy
 
-
+# Calculate information gain
 def info_gain(left_child, right_child, currScore):
     p = float(len(left_child)) / (len(left_child) + len(right_child))
     return currScore - p * entropy(left_child) - (1 - p) * entropy(right_child)
