@@ -96,7 +96,6 @@ def max_label(dict):
         if dict[key] > max_count:
             max_count = dict[key]
             label = key
-
     return label
 
 class Decision_Node:
